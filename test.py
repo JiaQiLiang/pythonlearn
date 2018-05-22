@@ -17,7 +17,7 @@ def get_html():
     r.encoding = r.apparent_encoding
     html = r.text
     doc = pq(html)
-    content = doc('.short-content').text()
+    content = doc('.review-list div').attr("data-cid")
     print(content)
 
 get_html()

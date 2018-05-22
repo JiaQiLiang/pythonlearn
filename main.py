@@ -4,10 +4,12 @@ from pyquery import PyQuery as pq
 
 # 用pq解析网页,拿取我们希望得到的元素
 
+from bs4 import BeautifulSoup as bs
+
 import random
 
 """
-https://movie.douban.com/subject/24773958/reviews?start=0 
+https://movie.douban.com/subject/24773958/reviews?start= 
  注意 start 0  20    40    60    80 分别代表第二页 第三页 第四页
             0  1*20 2*20  3*20  4*20
 """
@@ -19,12 +21,17 @@ headers = {
 
 
 def get_html():
-    for i in range(2):  # 一共显示了142页先输出两页的
+    for i in range(1):  # 一共显示了142页,先输出两页的
         url = baseUrl + str(i * 20)
         # 接下来就是拿着这么多的URL 分别获取评论信息
         random_num = random.randrange(200, 500)  # 随机访问网址获取网页
         r = requests.get(url, headers=headers, timeout=random_num)  # 最大用时 142*500ms=9小时.....
         r.raise_for_status()
         r.encoding = r.apparent_encoding
-        return r
+        soup = bs(r.text, 'html5lib')
+        atab = soup.find_all(attrs={"class": "reply"})  # 输出结果是一个数组
+        #TODO: ResulrSet类型如何使用? 怎么输出HERF?
+        print(atab)
 
+
+get_html()

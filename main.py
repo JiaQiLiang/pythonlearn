@@ -21,19 +21,26 @@ headers = {
 
 
 def get_html():
-    for i in range(1):  # 一共显示了142页,先输出两页的
+    for i in range(10):  # 一共显示了142页,先输出两页的
         url = baseUrl + str(i * 20)
         # 接下来就是拿着这么多的URL 分别获取评论信息
         random_num = random.randrange(200, 500)  # 随机访问网址获取网页
         r = requests.get(url, headers=headers, timeout=random_num)  # 最大用时 142*500ms=9小时.....
         r.raise_for_status()
         r.encoding = r.apparent_encoding
-        soup = bs(r.text, 'lxml')
+        soup = bs(r.text, 'html.parser')
         atab = soup.find_all(attrs={"class": "reply"})  # 输出结果是ResultSet
         for item in atab:
             href = item.attrs['href']
 
             cut = href[32:39]  # 成功输出字符,下一步开始抓取数据
-
+            ajax = requests.get("https://movie.douban.com/j/review/" + cut + "/full")
+            doc = pq(ajax.text)
+            resule = doc('p').text()
+            print(resule)
+            with open("data.txt", "a+", encoding='utf-8') as f:
+                 for reader in resule:
+                     f.write(reader)
+                 f.close() #这里缩进的问题
 
 get_html()

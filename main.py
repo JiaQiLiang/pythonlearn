@@ -28,10 +28,12 @@ def get_html():
         r = requests.get(url, headers=headers, timeout=random_num)  # 最大用时 142*500ms=9小时.....
         r.raise_for_status()
         r.encoding = r.apparent_encoding
-        soup = bs(r.text, 'html5lib')
-        atab = soup.find_all(attrs={"class": "reply"})  # 输出结果是一个数组
-        #TODO: ResulrSet类型如何使用? 怎么输出HERF?
-        print(atab)
+        soup = bs(r.text, 'lxml')
+        atab = soup.find_all(attrs={"class": "reply"})  # 输出结果是ResultSet
+        for item in atab:
+            href = item.attrs['href']
+
+            cut = href[32:39]  # 成功输出字符,下一步开始抓取数据
 
 
 get_html()
